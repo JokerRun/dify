@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import requests
 from flask import current_app
 
+from configs import dify_config
 
 @dataclass
 class OAuthUserInfo:
@@ -138,13 +139,9 @@ class GoogleOAuth(OAuth):
 
 
 class AzureOAuth(OAuth):
-    _AUTH_URL = current_app.config.get('AZURE_AUTH_URL')
-    _TOKEN_URL = current_app.config.get('AZURE_TOKEN_URL')
-    _USER_INFO_URL = current_app.config.get('AZURE_USER_INFO_URL')
-
-    def __init__(self, client_id: str, client_secret: str, redirect_uri: str):
-        super().__init__('621dd4f9-eac0-4aff-9ba3-90ff8c43b4d5', 'Zbb2TwNce-ph~6I7JnM~C0_~Se4gRwyTxh', 'https://dify.ddiworld.cn/console/api/oauth/authorize/azure')
-
+    _AUTH_URL = dify_config.AZURE_AUTH_URL
+    _TOKEN_URL = dify_config.AZURE_TOKEN_URL
+    _USER_INFO_URL = dify_config.AZURE_USER_INFO_URL
     def get_authorization_url(self):
         params = {
             'client_id': self.client_id,
