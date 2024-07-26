@@ -250,7 +250,8 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
-
+    ports:
+      - "${DB_PORT:-5432}:${DB_PORT:-5432}"
   # The redis cache.
   redis:
     image: redis:6-alpine
