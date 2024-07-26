@@ -10,7 +10,7 @@ from configs import dify_config
 from constants.languages import languages
 from extensions.ext_database import db
 from libs.helper import get_remote_ip
-from libs.oauth import GitHubOAuth, GoogleOAuth, OAuthUserInfo
+from libs.oauth import GitHubOAuth, GoogleOAuth, OAuthUserInfo,AzureOAuth
 from models.account import Account, AccountStatus
 from services.account_service import AccountService, RegisterService, TenantService
 
@@ -35,8 +35,16 @@ def get_oauth_providers():
                 client_secret=dify_config.GOOGLE_CLIENT_SECRET,
                 redirect_uri=dify_config.CONSOLE_API_URL + '/console/api/oauth/authorize/google',
             )
+        if not dify_config.AZURE_CLIENT_ID or not dify_config.AZURE_CLIENT_SECRET:
+            azure_oauth = None
+        else:
+            azure_oauth = AzureOAuth(
+                client_id=dify_config.AZURE_CLIENT_ID,
+                client_secret=dify_config.AZURE_CLIENT_SECRET,
+                redirect_uri=dify_config.CONSOLE_API_URL + '/console/api/oauth/authorize/azure',
+            )
 
-        OAUTH_PROVIDERS = {'github': github_oauth, 'google': google_oauth}
+        OAUTH_PROVIDERS = {'github': github_oauth, 'google': google_oauth, 'azure': azure_oauth}
         return OAUTH_PROVIDERS
 
 

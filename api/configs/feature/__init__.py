@@ -286,6 +286,30 @@ class OAuthConfig(BaseSettings):
     )
 
 
+    AZURE_CLIENT_ID: Optional[str] = Field(
+        description='Azure client id for OAuth',
+        default=None,
+    )
+
+    AZURE_CLIENT_SECRET: Optional[str] = Field(
+        description='Azure client secret key for OAuth',
+        default=None,
+    )
+    AZURE_AUTH_URL: Optional[str] = Field(
+        description='Azure authentication URL',
+        default=None,
+    )
+
+    AZURE_TOKEN_URL: Optional[str] = Field(
+        description='Azure token URL',
+        default=None,
+    )
+
+    AZURE_USER_INFO_URL: Optional[str] = Field(
+        description='Azure user information URL',
+        default=None,
+    )
+
 class ModerationConfig(BaseSettings):
     """
     Moderation in app configs.

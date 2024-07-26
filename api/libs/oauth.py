@@ -2,6 +2,7 @@ import urllib.parse
 from dataclasses import dataclass
 
 import requests
+from flask import current_app
 
 
 @dataclass
@@ -135,4 +136,55 @@ class GoogleOAuth(OAuth):
             email=raw_info['email']
         )
 
+
+class AzureOAuth(OAuth):
+    _AUTH_URL = current_app.config.get('AZURE_AUTH_URL')
+    _TOKEN_URL = current_app.config.get('AZURE_TOKEN_URL')
+    _USER_INFO_URL = current_app.config.get('AZURE_USER_INFO_URL')
+
+    def __init__(self, client_id: str, client_secret: str, redirect_uri: str):
+        super().__init__('621dd4f9-eac0-4aff-9ba3-90ff8c43b4d5', 'Zbb2TwNce-ph~6I7JnM~C0_~Se4gRwyTxh', 'https://dify.ddiworld.cn/console/api/oauth/authorize/azure')
+
+    def get_authorization_url(self):
+        params = {
+            'client_id': self.client_id,
+            'response_type': 'code',
+            'redirect_uri': self.redirect_uri,
+            'response_mode': 'query',
+            'scope': 'openid profile email https://microsoftgraph.chinacloudapi.cn/user.read'
+        }
+        return f"{self._AUTH_URL}?{urllib.parse.urlencode(params)}"
+
+    def get_access_token(self, code: str):
+        data = {
+            'client_id': self.client_id,
+            'scope': 'openid profile email',
+            'code': code,
+            'redirect_uri': self.redirect_uri,
+            'grant_type': 'authorization_code',
+            'client_secret': self.client_secret
+        }
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        response = requests.post(self._TOKEN_URL, data=data, headers=headers)
+
+        response_json = response.json()
+        access_token = response_json.get('access_token')
+
+        if not access_token:
+            raise ValueError(f"Error in Azure OAuth: {response_json}")
+
+        return access_token
+
+    def get_raw_user_info(self, token: str):
+        headers = {'Authorization': f"Bearer {token}"}
+        response = requests.get(self._USER_INFO_URL, headers=headers)
+        response.raise_for_status()
+        return response.json()
+
+    def _transform_user_info(self, raw_info: dict) -> OAuthUserInfo:
+        return OAuthUserInfo(
+            id=str(raw_info['id']),
+            name=raw_info.get('displayName'),
+            email=raw_info.get('mail') or raw_info.get('userPrincipalName')
+        )
 
