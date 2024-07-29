@@ -233,6 +233,7 @@ services:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
       APP_API_URL: ${APP_API_URL:-}
       SENTRY_DSN: ${WEB_SENTRY_DSN:-}
+      SSO_PROVIDER: ${SSO_PROVIDER:-}
 
   # The postgres database.
   db:

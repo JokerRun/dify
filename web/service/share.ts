@@ -223,5 +223,10 @@ export const textToAudioStream = (url: string, isPublicAPI: boolean, header: { c
 export const fetchAccessToken = async (appCode: string) => {
   const headers = new Headers()
   headers.append('X-App-Code', appCode)
+  // 查看Localstorage中是否有consoleToken
+  const consoleToken = localStorage.getItem('console_token')
+  if (consoleToken)
+    return get(`/passport?console_token=${consoleToken}`, { headers }) as Promise<{ access_token: string }>
+
   return get('/passport', { headers }) as Promise<{ access_token: string }>
 }

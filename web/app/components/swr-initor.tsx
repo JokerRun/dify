@@ -4,6 +4,7 @@ import { SWRConfig } from 'swr'
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { apiPrefix, ssoProvider } from '@/config'
 
 type SwrInitorProps = {
   children: ReactNode
@@ -19,11 +20,19 @@ const SwrInitor = ({
 
   useEffect(() => {
     if (!(consoleToken || consoleTokenFromLocalStorage))
-      router.replace('/signin')
+      router.push(`${apiPrefix}/oauth/login/${ssoProvider}`)
 
     if (consoleToken) {
       localStorage?.setItem('console_token', consoleToken!)
-      router.replace('/apps', { forceOptimisticNavigation: false } as any)
+      const redirectUrl = localStorage.getItem('redirect_url')
+      if (redirectUrl) {
+        window.location.href = redirectUrl
+        // 可选：重定向后清除 localStorage 中的 redirect_url
+        localStorage.removeItem('redirect_url')
+      }
+      else {
+        router.replace('/apps', { forceOptimisticNavigation: false } as any)
+      }
     }
     setInit(true)
   }, [])

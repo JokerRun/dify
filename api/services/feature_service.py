@@ -60,8 +60,8 @@ class FeatureService:
     def get_system_features(cls) -> SystemFeatureModel:
         system_features = SystemFeatureModel()
 
-        if dify_config.ENTERPRISE_ENABLED:
-            cls._fulfill_params_from_enterprise(system_features)
+        # if dify_config.ENTERPRISE_ENABLED:
+        cls._fulfill_params_from_enterprise(system_features)
 
         return system_features
 
@@ -110,9 +110,9 @@ class FeatureService:
 
     @classmethod
     def _fulfill_params_from_enterprise(cls, features):
-        enterprise_info = EnterpriseService.get_info()
+        # enterprise_info = EnterpriseService.get_info()
 
-        features.sso_enforced_for_signin = enterprise_info['sso_enforced_for_signin']
-        features.sso_enforced_for_signin_protocol = enterprise_info['sso_enforced_for_signin_protocol']
-        features.sso_enforced_for_web = enterprise_info['sso_enforced_for_web']
-        features.sso_enforced_for_web_protocol = enterprise_info['sso_enforced_for_web_protocol']
+        features.sso_enforced_for_signin = True  # enterprise_info['sso_enforced_for_signin']
+        features.sso_enforced_for_signin_protocol = 'oauth2'  # enterprise_info['sso_enforced_for_signin_protocol']
+        features.sso_enforced_for_web = True  # enterprise_info['sso_enforced_for_web']
+        features.sso_enforced_for_web_protocol = 'oauth2'  # enterprise_info['sso_enforced_for_web_protocol']

@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cn from '@/utils/classnames'
 import Toast from '@/app/components/base/toast'
-import { getUserOAuth2SSOUrl, getUserOIDCSSOUrl, getUserSAMLSSOUrl } from '@/service/sso'
+import { getUserOIDCSSOUrl, getUserSAMLSSOUrl } from '@/service/sso'
 import Button from '@/app/components/base/button'
-
+import { apiPrefix, ssoProvider } from '@/config'
 type UserSSOFormProps = {
   protocol: string
 }
@@ -56,12 +56,9 @@ const UserSSOForm: FC<UserSSOFormProps> = ({
       })
     }
     else if (protocol === 'oauth2') {
-      getUserOAuth2SSOUrl().then((res) => {
-        document.cookie = `user-oauth2-state=${res.state}`
-        router.push(res.url)
-      }).finally(() => {
-        setIsLoading(false)
-      })
+      // 跳转到`${apiPrefix}/oauth/login/github`
+      router.push(`${apiPrefix}/oauth/login/${ssoProvider}`)
+      setIsLoading(false)
     }
     else {
       Toast.notify({

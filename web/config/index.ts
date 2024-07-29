@@ -5,6 +5,12 @@ import { PromptRole } from '@/models/debug'
 
 export let apiPrefix = ''
 export let publicApiPrefix = ''
+export let ssoProvider = 'azure'
+if (process.env.NEXT_PUBLIC_PUBLIC_API_SSO_PROVIDER)
+  ssoProvider = process.env.NEXT_PUBLIC_PUBLIC_API_SSO_PROVIDER
+
+else if (globalThis.document?.body?.getAttribute('data-pubic-api-sso-provider'))
+  ssoProvider = globalThis.document?.body?.getAttribute('data-pubic-api-sso-provider') as string
 
 // NEXT_PUBLIC_API_PREFIX=/console/api NEXT_PUBLIC_PUBLIC_API_PREFIX=/api npm run start
 if (process.env.NEXT_PUBLIC_API_PREFIX && process.env.NEXT_PUBLIC_PUBLIC_API_PREFIX) {

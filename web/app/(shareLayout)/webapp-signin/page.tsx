@@ -4,9 +4,10 @@ import type { FC } from 'react'
 import React, { useEffect } from 'react'
 import cn from '@/utils/classnames'
 import Toast from '@/app/components/base/toast'
-import { fetchSystemFeatures, fetchWebOAuth2SSOUrl, fetchWebOIDCSSOUrl, fetchWebSAMLSSOUrl } from '@/service/share'
+import { fetchSystemFeatures, fetchWebOIDCSSOUrl, fetchWebSAMLSSOUrl } from '@/service/share'
 import { setAccessToken } from '@/app/components/share/utils'
 import Loading from '@/app/components/base/loading'
+import { apiPrefix, ssoProvider } from '@/config'
 
 const WebSSOForm: FC = () => {
   const searchParams = useSearchParams()
@@ -61,8 +62,17 @@ const WebSSOForm: FC = () => {
         break
       }
       case 'oauth2': {
-        const oauth2Res = await fetchWebOAuth2SSOUrl(appCode, redirectUrl)
-        router.push(oauth2Res.url)
+        // 从当前URL query中获取redirect_url参数
+        const redirectUrl = new URL(window.location.href).searchParams.get('redirect_url')
+        console.log('redirectUrl', redirectUrl)
+        if (redirectUrl) {
+          // 将当前根地址与redirect_url组合并存储到localStorage
+          localStorage.setItem('redirect_url', `${window.location.origin}${redirectUrl}`)
+        }
+
+        // 跳转到OAuth2登录页面
+        const oauthLoginUrl = `${apiPrefix}/oauth/login/${ssoProvider}`
+        router.push(oauthLoginUrl)
         break
       }
       default:

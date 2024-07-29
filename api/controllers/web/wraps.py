@@ -54,7 +54,7 @@ def decode_jwt_token():
         if not end_user:
             raise NotFound()
 
-        _validate_web_sso_token(decoded, system_features)
+        # _validate_web_sso_token(decoded, system_features)
 
         return app_model, end_user
     except Unauthorized as e:
