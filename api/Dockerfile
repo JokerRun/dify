@@ -1,11 +1,12 @@
 # base image
 FROM python:3.10-slim-bookworm AS base
+RUN grep -lr 'deb.debian.org' /etc/apt/ | xargs sed -i 's|http://deb.debian.org/debian|http://mirrors.aliyun.com/debian|g'
 
 WORKDIR /app/api
 
 # Install Poetry
 ENV POETRY_VERSION=1.8.3
-RUN pip install --no-cache-dir  -i https://mirrors.aliyun.com/pypi/simple/ poetry==${POETRY_VERSION}
+RUN pip install --no-cache-dir -i https://mirrors.aliyun.com/pypi/simple/ poetry==${POETRY_VERSION}
 
 # Configure Poetry
 ENV POETRY_CACHE_DIR=/tmp/poetry_cache
@@ -20,8 +21,11 @@ RUN apt-get update \
 
 # Install Python dependencies
 COPY pyproject.toml poetry.lock ./
-RUN poetry config repositories.aliyun https://mirrors.aliyun.com/pypi/simple/
-RUN poetry install --sync --no-cache --no-root --source aliyun
+# RUN poetry config repositories.pypi https://mirrors.aliyun.com/pypi/simple/
+# ENV POETRY_PYPI_MIRROR_URL=https://mirrors.aliyun.com/pypi/simple/
+# 重新生成 poetry.lock 文件
+RUN poetry lock --no-update
+RUN poetry install --sync --no-cache --no-root -vvv
 
 # production stage
 FROM base AS production
