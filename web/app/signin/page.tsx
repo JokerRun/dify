@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Script from 'next/script'
 import Loading from '../components/base/loading'
+import Button from '../components/base/button'
 import Forms from './forms'
 import Header from './_header'
 import style from './page.module.css'
@@ -16,6 +17,7 @@ import { getSystemFeatures } from '@/service/common'
 const SignIn = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [systemFeatures, setSystemFeatures] = useState<SystemFeatures>(defaultSystemFeatures)
+  const [showForms, setShowForms] = useState<boolean>(false)
 
   useEffect(() => {
     getSystemFeatures().then((res) => {
@@ -81,7 +83,23 @@ gtag('config', 'AW-11217955271"');
           )}
 
           {!loading && systemFeatures.sso_enforced_for_signin && (
-            <UserSSOForm protocol={systemFeatures.sso_enforced_for_signin_protocol} />
+            <>
+              {!showForms
+                ? (
+                  <UserSSOForm protocol={systemFeatures.sso_enforced_for_signin_protocol} />
+                )
+                : (
+                  <Forms />
+                )}
+              <Button
+                onClick={() => setShowForms(!showForms)}
+                className="mt-4"
+                variant='primary'
+                disabled={loading}
+              >
+                {showForms ? '切换到SSO登录' : '切换到普通登录'}
+              </Button>
+            </>
           )}
         </div>
 
