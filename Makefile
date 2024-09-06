@@ -2,7 +2,7 @@
 DOCKER_REGISTRY=langgenius
 WEB_IMAGE=$(DOCKER_REGISTRY)/dify-web
 API_IMAGE=$(DOCKER_REGISTRY)/dify-api
-VERSION=0.6.16.ddi
+VERSION=0.7.3.ddi
 
 # Build Docker images
 build-web:
