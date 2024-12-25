@@ -1,0 +1,5 @@
+FROM langgenius/dify-api:0.14.2
+RUN pip install livekit-api
+# 覆盖 oauth.py 文件
+COPY ./livekit_passport.py /app/api/controllers/console/auth/livekit_passport.py
+COPY ./__init__.py /app/api/controllers/console/__init__.py
