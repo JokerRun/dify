@@ -111,9 +111,9 @@ const CodeBlock: CodeComponent = memo(({ inline, className, children, ...props }
     }
     else if (language === 'echarts') {
       return (
-        <div style={{ minHeight: '350px', minWidth: '700px' }}>
+        <div style={{ minHeight: '350px', minWidth: '100%', overflowX: 'scroll' }}>
           <ErrorBoundary>
-            <ReactEcharts option={chartData} />
+            <ReactEcharts option={chartData} style={{ minWidth: '700px' }} />
           </ErrorBoundary>
         </div>
       )
@@ -229,7 +229,11 @@ export function Markdown(props: { content: string; className?: string }) {
   return (
     <div className={cn(props.className, 'markdown-body')}>
       <ReactMarkdown
-        remarkPlugins={[RemarkGfm, RemarkMath, RemarkBreaks]}
+        remarkPlugins={[
+          RemarkGfm,
+          [RemarkMath, { singleDollarTextMath: false }],
+          RemarkBreaks,
+        ]}
         rehypePlugins={[
           RehypeKatex,
           RehypeRaw as any,
